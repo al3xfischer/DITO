@@ -1,0 +1,22 @@
+Torrent
+
+Server:
+    Anmelden (als Client) (IP)
+    Abmelden (als Client)
+    Files registrieren (Name,Hash,Größe,Client)
+    Files abfragen 
+    Files löschen/deregsitrieren (Client aus File liste löschen)
+
+Client:
+    Anmelden am Server // ob online
+    Abmelden am Server //ob online
+    Files vom Server abfragen und Anzeigen
+    File laden (von mehreren anderen Clients)
+    File am Server registrieren 
+    File am Server deregistrieren
+
+Server <=> Client (per gRPC)
+Client <=> Client (per gRPC)
+
+Client (WPF)
+Server (Asp.Net Core)
