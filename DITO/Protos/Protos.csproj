@@ -1,14 +1,16 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.0</TargetFramework>
-    <UseWPF>true</UseWPF>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="greet.proto" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Google.Protobuf" Version="3.10.1" />
-    <PackageReference Include="Grpc.Net.Client" Version="2.24.0" />
+    <PackageReference Include="Grpc.Core" Version="2.24.0" />
     <PackageReference Include="Grpc.Tools" Version="2.24.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -16,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Protos\Protos.csproj" />
+    <Protobuf Include="greet.proto" GrpcServices="Both" />
   </ItemGroup>
 
 </Project>
