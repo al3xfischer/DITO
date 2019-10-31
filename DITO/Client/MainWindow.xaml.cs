@@ -27,7 +27,7 @@ namespace Client
 
         public MainWindow()
         {
-            var channel = GrpcChannel.ForAddress("https://localhost:52230/");
+            var channel = GrpcChannel.ForAddress("https://localhost:5001/");
             var client = new Greeter.GreeterClient(channel);
 
             var reply = client.SayHello(new HelloRequest { Name = "Test" });
