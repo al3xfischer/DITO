@@ -1,7 +1,7 @@
-﻿using System.Net.Http;
-using System.Windows;
-using Grpc.Net.Client;
-using Server;
+﻿using System.Windows;
+using Client.DI;
+using Client.ViewModels;
+using Client.Views;
 
 namespace Client
 {
@@ -14,14 +14,19 @@ namespace Client
 
         public MainWindow()
         {
-            var channel = GrpcChannel.ForAddress("http://localhost:5000/");
-            var client = new Greeter.GreeterClient(channel);
-
-            var reply = client.SayHello(new HelloRequest { Name = "Test" });
-            this.Reply = reply.Message;
-
             InitializeComponent();
-            this.DataContext = this;
+            this.DataContext = Container.Resolve<MainViewModel>();
+        }
+
+        private void Menu_Settings_Click(object sender, RoutedEventArgs e)
+        {
+           new Settings().Show();
+        }
+
+        private void Menu_File_Close_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
     }
 }
+
