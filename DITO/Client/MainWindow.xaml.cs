@@ -20,7 +20,7 @@ namespace Client
 
         private void Menu_Settings_Click(object sender, RoutedEventArgs e)
         {
-           new Settings().Show();
+           new Settings().ShowDialog();
         }
 
         private void Menu_File_Close_Click(object sender, RoutedEventArgs e)

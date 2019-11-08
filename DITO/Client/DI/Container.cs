@@ -1,4 +1,6 @@
-﻿using Client.ViewModels;
+﻿using Client.Services.Interfaces;
+using Client.Services.Provider;
+using Client.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -27,11 +29,14 @@ namespace Client.DI
             services.AddTransient<SettingsViewModel>();
 
             // Services
+            services.AddSingleton<IConfigurationService, ConfigurationService>();
 
             // Logging
             services.AddLogging();
 
             provider = services.BuildServiceProvider();
+
+            Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "dito/logs/"));
 
             // Logging Configuration
             provider.GetService<ILoggerFactory>()
