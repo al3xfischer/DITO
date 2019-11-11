@@ -7,13 +7,13 @@ using Torrent;
 namespace Client.Services.Provider
 {
 
-    public class ClientServerService
+    public class ClientServerService : IClientServerService
     {
         private readonly IConfigurationService configurationService;
 
         private Grpc.Core.Server server;
 
-        public ClientServerService(IConfigurationService configurationService,TorrentFileServiceImpl torrentFileService)
+        public ClientServerService(IConfigurationService configurationService, TorrentFileServiceImpl torrentFileService)
         {
             if (torrentFileService is null)
             {
@@ -24,7 +24,7 @@ namespace Client.Services.Provider
 
             server = new Grpc.Core.Server
             {
-                Services = { TorrentFileService.BindService(torrentFileService)  },
+                Services = { TorrentFileService.BindService(torrentFileService) },
                 Ports = { new ServerPort("0.0.0.0", this.configurationService.LocalServerPort, ServerCredentials.Insecure) },
             };
         }

@@ -28,12 +28,19 @@ namespace Client
 
         private async void TestMth()
         {
-            var con = Container.Resolve<IConfigurationService>();
-            var clientSer = new ClientToClientService(con);
+            var fileService = Container.Resolve<IFileService>();
+            var file = new FileInfo(@"C:\Users\Alex\Desktop\chat.png");
+            fileService.AddFileEntry(file);
 
-            var entry = new FileEntry { Length = 22040, Name = "test" };
-            var hosts = new List<Host> { new Host { Name = "10.0.0.4", Port = 5001 } };
-            var x = await Task.WhenAll(clientSer.QueryFile(hosts,entry));
+
+            var server = Container.Resolve<IClientServerService>();
+            server.Start();
+            //var con = Container.Resolve<IConfigurationService>();
+            //var clientSer = new ClientToClientService(con);
+
+            //var entry = new FileEntry { Length = 22040, Name = "test" };
+            //var hosts = new List<Host> { new Host { Name = "10.0.0.4", Port = 5001 } };
+            //var x = await Task.WhenAll(clientSer.QueryFile(hosts,entry));
 
             //var fileService = new FileService();
             //var file = new FileInfo(@"C:\Users\Alex\Desktop\chat.png");

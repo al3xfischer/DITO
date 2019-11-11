@@ -31,6 +31,8 @@ namespace Client.DI
             // Services
             services.AddSingleton<IConfigurationService, ConfigurationService>();
             services.AddTransient<TorrentFileServiceImpl>();
+            services.AddSingleton<IFileService, FileService>();
+            services.AddSingleton<IClientServerService,ClientServerService>();
 
             // Logging
             services.AddLogging();
