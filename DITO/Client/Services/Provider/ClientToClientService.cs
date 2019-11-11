@@ -32,9 +32,9 @@ namespace Client.Services.Provider
             var partsCount = file.Length / this.configurationService.MaxBatchSize;
             var lastBatchSize = file.Length % this.configurationService.MaxBatchSize;
             if (lastBatchSize != 0) partsCount++;
-            var hots = hosts.Repeat((i) => i < partsCount);
+            var repeated = hosts.Repeat((i) => i < partsCount);
 
-            foreach (var host in hosts.Select((config, i) => (config, i)))
+            foreach (var host in repeated.Select((config, i) => (config, i)))
             {
                 var channel = new Channel(host.config.Name, host.config.Port, ChannelCredentials.Insecure);
                 var client = new TorrentFileService.TorrentFileServiceClient(channel);

@@ -40,8 +40,11 @@ namespace Client
             var clientSer = new ClientToClientService(con);
 
             var entry = new FileEntry { Length = 22040, Name = "chat.png" };
-            var hosts = new List<Host> { new Host { Name = "10.0.0.20", Port = 5001 } };
-            var x = await Task.WhenAll(clientSer.QueryFile(hosts, entry));
+            var hosts = new List<Host> { new Host { Name = "10.0.0.4", Port = 5001 } };
+            var res = await Task.WhenAll(clientSer.QueryFile(hosts, entry));
+            var allData = res.SelectMany(r => r.Payload.ToArray());
+            var files = Container.Resolve<IFileService>();
+            files.SaveFile(allData.ToArray(),@"C:\Users\Alex\Desktop","chat.png");
 
             //var fileService = new FileService();
             //var file = new FileInfo(@"C:\Users\Alex\Desktop\chat.png");
