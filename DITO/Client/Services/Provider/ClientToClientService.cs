@@ -32,7 +32,7 @@ namespace Client.Services.Provider
             var partsCount = file.Length / this.configurationService.MaxBatchSize;
             var lastBatchSize = file.Length % this.configurationService.MaxBatchSize;
             if (lastBatchSize != 0) partsCount++;
-            var hots = hosts.Repeat((i) => i <= partsCount);
+            var hots = hosts.Repeat((i) => i < partsCount);
 
             foreach (var host in hosts.Select((config, i) => (config, i)))
             {
