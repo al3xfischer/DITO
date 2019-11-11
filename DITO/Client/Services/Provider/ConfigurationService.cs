@@ -30,16 +30,22 @@ namespace Client.Services.Provider
             set => appConfiguration.ServerName = value ?? throw new ArgumentNullException(nameof(ServerName));
         }
 
-        public uint ServerPort
+        public int ServerPort
         {
             get => appConfiguration.ServerPort;
             set => appConfiguration.ServerPort = value;
         }
 
-        public uint MaxBatchSize
+        public int MaxBatchSize
         {
             get => appConfiguration.MaxBatchSize;
             set => appConfiguration.ServerPort = value;
+        }
+        
+        public int LocalServerPort
+        {
+            get => appConfiguration.LocalServerPort;
+            set => appConfiguration.LocalServerPort = value;
         }
 
         public DitoConfiguration Configuration => this.appConfiguration;

@@ -1,9 +1,5 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Text.Json.Serialization;
 
 namespace Client.Models
 {
@@ -13,10 +9,13 @@ namespace Client.Models
         public string ServerName { get; set; }
 
         [JsonProperty(PropertyName = "serverPort")]
-        public uint ServerPort { get; set; }
+        public int ServerPort { get; set; }
 
         [JsonProperty(PropertyName = "maxBatchSize")]
-        public uint MaxBatchSize { get; set; }
+        public int MaxBatchSize { get; set; }
+
+        [JsonProperty(PropertyName = "localServerName")]
+        public int LocalServerPort { get; set; }
 
         public object Clone()
         {
@@ -24,7 +23,8 @@ namespace Client.Models
             {
                 ServerName = this.ServerName,
                 ServerPort = this.ServerPort,
-                MaxBatchSize = this.MaxBatchSize
+                MaxBatchSize = this.MaxBatchSize,
+                LocalServerPort = this.LocalServerPort
             };
         }
     }

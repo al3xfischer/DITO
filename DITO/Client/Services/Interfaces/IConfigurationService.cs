@@ -19,7 +19,7 @@ namespace Client.Services.Interfaces
         /// <value>
         /// The server port.
         /// </value>
-        public uint ServerPort { get; set; }
+        public int ServerPort { get; set; }
 
 
         /// <summary>
@@ -28,7 +28,16 @@ namespace Client.Services.Interfaces
         /// <value>
         /// The maximum size of the batch.
         /// </value>
-        public uint MaxBatchSize { get; set; }
+        public int MaxBatchSize { get; set; }
+
+
+        /// <summary>
+        /// Gets or sets the local server port.
+        /// </summary>
+        /// <value>
+        /// The local server port.
+        /// </value>
+        public int LocalServerPort { get; set; }
 
 
         /// <summary>

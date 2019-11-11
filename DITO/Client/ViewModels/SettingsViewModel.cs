@@ -33,13 +33,13 @@ namespace Client.ViewModels
             set => this.configuration.ServerName = value;
         }
 
-        public uint ServerPort
+        public int ServerPort
         {
             get => this.configuration.ServerPort;
             set => this.configuration.ServerPort = value;
         }
 
-        public uint MaxBatchSize
+        public int MaxBatchSize
         {
             get => this.configuration.MaxBatchSize;
             set => this.configuration.MaxBatchSize = value;

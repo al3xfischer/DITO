@@ -1,0 +1,24 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "Torrent";
+
+package File;
+
+// The RPCFileService definition
+service TorrentFileService {
+	// Send the requested part of the file
+	rpc GetFile (FileRequest) returns (FileReply) {}
+}
+
+message FileRequest {
+	string name = 1;
+	int32 max_batch_size = 2;
+	int32 batch_length = 3;
+	int32 index = 4;
+}
+
+message FileReply {
+	string name = 1;
+	int32 index = 2;
+	bytes payload = 3; 
+}

@@ -1,32 +1,36 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Grpc.Core;
 using System.Threading.Tasks;
-using Server;
+using Client.Services.Interfaces;
+using Torrent;
 
 namespace Client.Services.Provider
 {
-    class GreeterIml : Greeter.GreeterBase
-    {
-        public override Task<HelloReply> SayHello(HelloRequest request, ServerCallContext context)
-        {
-            return Task.FromResult(new HelloReply { Message = "Hello" + request.Name });
-        }
-    }
 
     public class ClientServerService
     {
-        public ClientServerService()
-        {
-            var port = 5001;
-            var server = new Grpc.Core.Server
-            {
-                Services = { Greeter.BindService(new GreeterIml()) },
-                Ports = { new ServerPort("localhost", port, ServerCredentials.Insecure) }
-            };
+        private readonly IConfigurationService configurationService;
 
-            server.Start();
+        private Grpc.Core.Server server;
+
+        public ClientServerService(IConfigurationService configurationService,TorrentFileServiceImpl torrentFileService)
+        {
+            if (torrentFileService is null)
+            {
+                throw new ArgumentNullException(nameof(torrentFileService));
+            }
+
+            this.configurationService = configurationService ?? throw new ArgumentNullException(nameof(configurationService));
+
+            server = new Grpc.Core.Server
+            {
+                Services = { TorrentFileService.BindService(torrentFileService)  },
+                Ports = { new ServerPort("0.0.0.0", this.configurationService.LocalServerPort, ServerCredentials.Insecure) },
+            };
         }
+
+        public void Start() => this.server.Start();
+
+        public Task Stop() => this.server.ShutdownAsync();
     }
 }
