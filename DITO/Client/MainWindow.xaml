@@ -12,7 +12,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Menu Grid.Row="0">
+        <Menu Grid.Row="0" Height="20">
             <MenuItem Header="_File">
                 <Menu>
                     <MenuItem Header="_Exit" Name="Menu_File_Close" Click="Menu_File_Close_Click"  />
