@@ -16,8 +16,6 @@ namespace Client
         {
             InitializeComponent();
             this.DataContext = Container.Resolve<MainViewModel>();
-
-            this.TestMth();
         }
 
         private void TestMth()
@@ -70,6 +68,11 @@ namespace Client
 
             var fileinfo = new FileInfo(ofd.FileName);
             (this.DataContext as MainViewModel).RegisterFileCommand.Execute(fileinfo);
+        }
+
+        private void Menu_Browse_Files_Click(object sender, RoutedEventArgs e)
+        {
+            new FileBrowser().ShowDialog();
         }
     }
 }

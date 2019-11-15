@@ -18,6 +18,7 @@
             <MenuItem Header="_File">
                 <MenuItem Header="_Exit" Name="Menu_File_Close" Click="Menu_File_Close_Click"  />
                 <MenuItem Header="_Add File" Name="Menu_Add_File" Click="Menu_Add_File_Click"  />
+                <MenuItem Header="_Browse Files" Name="Menu_Browse_Files" Click="Menu_Browse_Files_Click"  />
             </MenuItem>
             <MenuItem Header="_Settings" Name="Menu_Settings" Click="Menu_Settings_Click"/>
         </Menu>
