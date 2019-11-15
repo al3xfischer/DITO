@@ -13,5 +13,9 @@ namespace Client.Services.Interfaces
         void RemoveFileEntry(FileInfo file);
 
         FileInfo SaveFile(byte[] data, string path, string fileName);
+
+        FileInfo CopyToPath(FileInfo file, string targetPath);
+
+        void DeleteFile(FileInfo file);
     }
 }

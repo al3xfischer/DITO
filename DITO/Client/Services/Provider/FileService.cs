@@ -90,6 +90,52 @@ namespace Client.Services.Provider
             return new FileInfo(fullName);
         }
 
+        public FileInfo CopyToPath(FileInfo file, string targetPath)
+        {
+            if (file is null)
+            {
+                throw new ArgumentNullException(nameof(file));
+            }
 
+            if (targetPath is null)
+            {
+                throw new ArgumentNullException(nameof(targetPath));
+            }
+
+            if (!file.Exists)
+            {
+                throw new ArgumentException("The file does not exist");
+            }
+
+            if (!Directory.Exists(targetPath))
+            {
+                Directory.CreateDirectory(targetPath);
+            }
+
+            var filename = Path.Combine(targetPath, file.Name);
+            
+            try
+            {
+                File.Copy(file.FullName, filename);
+            }
+            catch
+            {
+                return null;
+            }
+            
+            return new FileInfo(filename);
+        }
+
+        public void DeleteFile(FileInfo file)
+        {
+            if (file is null)
+            {
+                throw new ArgumentNullException(nameof(file));
+            }
+
+            if (!file.Exists) return;
+
+            File.Delete(file.FullName);
+        }
     }
 }

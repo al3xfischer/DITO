@@ -1,14 +1,9 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.IO;
 using System.Windows;
 using Client.DI;
-using Client.Models;
-using Client.Services.Interfaces;
-using Client.Services.Provider;
 using Client.ViewModels;
 using Client.Views;
+using Microsoft.Win32;
 
 namespace Client
 {
@@ -17,8 +12,6 @@ namespace Client
     /// </summary>
     public partial class MainWindow : Window
     {
-        private ClientServerService Server;
-
         public MainWindow()
         {
             InitializeComponent();
@@ -27,7 +20,7 @@ namespace Client
             this.TestMth();
         }
 
-        private async void TestMth()
+        private void TestMth()
         {
             //var fileService = Container.Resolve<IFileService>();
             //var file = new FileInfo(@"C:\Users\Alex\Desktop\chat.png");
@@ -36,15 +29,15 @@ namespace Client
 
             //var server = Container.Resolve<IClientServerService>();
             //server.Start();
-            var con = Container.Resolve<IConfigurationService>();
-            var clientSer = new ClientToClientService(con);
+            //var con = Container.Resolve<IConfigurationService>();
+            //var clientSer = new ClientToClientService(con);
 
-            var entry = new FileEntry { Length = 22040, Name = "chat.png" };
-            var hosts = new List<Host> { new Host { Name = "10.0.0.4", Port = 5001 } };
-            var res = await Task.WhenAll(clientSer.QueryFile(hosts, entry));
-            var allData = res.SelectMany(r => r.Payload.ToArray());
-            var files = Container.Resolve<IFileService>();
-            files.SaveFile(allData.ToArray(),@"C:\Users\Alex\Desktop","chat.png");
+            //var entry = new FileEntry { Length = 22040, Name = "chat.png" };
+            //var hosts = new List<Host> { new Host { Name = "10.0.0.4", Port = 5001 } };
+            //var res = await Task.WhenAll(clientSer.QueryFile(hosts, entry));
+            //var allData = res.SelectMany(r => r.Payload.ToArray());
+            //var files = Container.Resolve<IFileService>();
+            //files.SaveFile(allData.ToArray(), @"C:\Users\Alex\Desktop", "chat.png");
 
             //var fileService = new FileService();
             //var file = new FileInfo(@"C:\Users\Alex\Desktop\chat.png");
@@ -61,13 +54,22 @@ namespace Client
 
         private void Menu_Settings_Click(object sender, RoutedEventArgs e)
         {
-           new Settings().ShowDialog();
+            new Settings().ShowDialog();
         }
 
         private void Menu_File_Close_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
-            Server.Stop();
+        }
+
+        private void Menu_Add_File_Click(object sender, RoutedEventArgs e)
+        {
+            var ofd = new OpenFileDialog();
+
+            if (ofd.ShowDialog() != true) return;
+
+            var fileinfo = new FileInfo(ofd.FileName);
+            (this.DataContext as MainViewModel).RegisterFileCommand.Execute(fileinfo);
         }
     }
 }
