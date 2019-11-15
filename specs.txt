@@ -3,7 +3,7 @@ Torrent
 Server:
     Anmelden (als Client) (IP)
     Abmelden (als Client)
-    Files registrieren (Name,Hash,Größe,Client)
+    Files registrieren (Name,Hash,Größe,ClientIP,ClientPort)
     Files abfragen 
     Files löschen/deregsitrieren (Client aus File liste löschen)
 
