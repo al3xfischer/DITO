@@ -7,6 +7,7 @@ using System.Security.Cryptography;
 using Torrent;
 using Grpc.Net.Client;
 using System.Threading.Tasks;
+using System.Net.Http;
 
 namespace Client.Services.Provider
 {
@@ -16,7 +17,8 @@ namespace Client.Services.Provider
 
         private readonly IConfigurationService configurationService;
 
-        public SignUpServiceImpl(IFileService fileService, IConfigurationService configurationService) : base(GrpcChannel.ForAddress("https://" + configurationService.ServerName + ":" + configurationService.ServerPort))
+        public SignUpServiceImpl(IFileService fileService, IConfigurationService configurationService) : base(GrpcChannel.ForAddress("https" +
+            "://" + configurationService.ServerName + ":" + configurationService.ServerPort))
         {
             this.fileService = fileService ?? throw new ArgumentNullException(nameof(fileService));
             this.configurationService = configurationService ?? throw new ArgumentNullException(nameof(configurationService));
@@ -57,7 +59,16 @@ namespace Client.Services.Provider
             signUpMessage.Files.Add(sentFile);
             signUpMessage.ClientPort = configurationService.LocalServerPort;
 
-            this.SignUpOneFileAsync(signUpMessage);
+            var handler = new HttpClientHandler();
+            handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+            var httpClient = new HttpClient(handler);
+            var channel = GrpcChannel.ForAddress("https://10.0.0.4:5001",new GrpcChannelOptions { HttpClient = httpClient,  });
+            var client = new Torrent.SignUpService.SignUpServiceClient(channel);
+
+            var x = client.SignUpOneFile(signUpMessage);
+
+            //var x = this.SignUpOneFile(signUpMessage);
+            var z = 1;
         }
     }
 }
