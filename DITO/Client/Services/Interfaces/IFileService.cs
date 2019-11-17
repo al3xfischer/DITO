@@ -20,5 +20,7 @@ namespace Client.Services.Interfaces
         FileInfo CopyToPath(FileInfo file, string targetPath);
 
         void DeleteFile(FileInfo file);
+
+        string GetHash(FileInfo file);
     }
 }

@@ -24,35 +24,31 @@ namespace Server.Services.Provider
         public override Task<SignUpReply> SignUp(SignUpMessage request, ServerCallContext context)
         {
             SignUpReply reply = new SignUpReply();
-            
-            if (context.Peer.Substring(0, 5) == "ipv4:")
+            var ip = context.GetHttpContext().Connection.RemoteIpAddress.ToString();
+
+            foreach (var torrentFile in this.torrentFileManagerService.GetAllTorrentFiles())
             {
-                foreach (var torrentFile in this.torrentFileManagerService.GetAllTorrentFiles())
+                var file = new TFile
                 {
-                    var file = new TFile {
-                        FileName = torrentFile.FileName,
-                        FileHash = torrentFile.FileHash,
-                        FileSize = torrentFile.FileSize,
-                    };
+                    FileName = torrentFile.FileName,
+                    FileHash = torrentFile.FileHash,
+                    FileSize = torrentFile.FileSize,
+                };
 
-                    file.ClientIPs.AddRange(torrentFile.ClientAddresses.Select(f => f.Address.ToString()));
-                    file.ClientPorts.AddRange(torrentFile.ClientAddresses.Select(f => f.Port));
+                file.ClientIPs.AddRange(torrentFile.ClientAddresses.Select(f => f.Address.ToString()));
+                file.ClientPorts.AddRange(torrentFile.ClientAddresses.Select(f => f.Port));
 
-                    reply.TorrentFiles.Add(file);
-                }
-
-                this.torrentFileManagerService.AddTorrentFiles(request.Files,context.Peer.Substring(5), request.ClientPort);
+                reply.TorrentFiles.Add(file);
             }
-            
+
+            this.torrentFileManagerService.AddTorrentFiles(request.Files, ip, request.ClientPort);
             return Task.FromResult(reply);
         }
 
         public override Task<Empty> SignUpOneFile(SignUpMessage request, ServerCallContext context)
         {
-            if (context.Peer.Substring(0, 5) == "ipv4:")
-            {
-                this.torrentFileManagerService.AddTorrentFiles(request.Files, context.Peer.Substring(5), request.ClientPort);
-            }
+            var ip = context.GetHttpContext().Connection.RemoteIpAddress.ToString();
+            this.torrentFileManagerService.AddTorrentFiles(request.Files, ip, request.ClientPort);
 
             return Task.FromResult(new Empty());
         }

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 
 namespace Client.Services.Provider
 {
@@ -141,6 +142,28 @@ namespace Client.Services.Provider
             if (!file.Exists) return;
 
             File.Delete(file.FullName);
+        }
+
+        public string GetHash(FileInfo file)
+        {
+            if (file is null)
+            {
+                throw new ArgumentNullException(nameof(file));
+            }
+
+            if (!file.Exists)
+            {
+                throw new ArgumentException("The file does not exist");
+            }
+
+            var hash = string.Empty;
+            using (var sha = SHA512.Create())
+            using(var stream = File.OpenRead(file.FullName))
+            {
+                hash = Convert.ToBase64String(sha.ComputeHash(stream));
+            }
+
+            return hash;
         }
     }
 }

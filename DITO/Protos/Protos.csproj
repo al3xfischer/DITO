@@ -5,7 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="greet.proto" />
     <None Remove="torrentfile.proto" />
   </ItemGroup>
 
@@ -19,7 +18,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="greet.proto" GrpcServices="Both" />
     <Protobuf Include="torrentfile.proto" GrpcServices="Both" />
     <Protobuf Include="clientSignUp.proto" GrpcServices="Both" />
     <Protobuf Include="clientDeleteFiles.proto" GrpcServices="Both" />

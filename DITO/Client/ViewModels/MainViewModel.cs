@@ -18,7 +18,9 @@ namespace Client.ViewModels
         private readonly string filesFolder;
 
         private readonly IFileService fileService;
+
         private readonly SignUpServiceImpl signUpService;
+
         private readonly DeleteServerFilesService deleteServerFilesService;
 
         public MainViewModel(IFileService fileService, SignUpServiceImpl signUpService, DeleteServerFilesService deleteServerFilesService)
@@ -49,9 +51,8 @@ namespace Client.ViewModels
 
                 fileService.AddFileEntry(copiedFile);
                 this.RegisteredFiles.Add(copiedFile);
+                this.signUpService.SignUp(copiedFile);
                 this.FirePropertyChanged(nameof(this.RegisteredFiles));
-
-                this.signUpService.SignUpOneFile(copiedFile);
             });
 
             this.DeleteRegisteredFile = new RelayCommand((arg) =>
@@ -60,17 +61,15 @@ namespace Client.ViewModels
 
                 var file = arg as FileInfo;
 
-                this.deleteServerFilesService.DeleteOneFile(file);
 
+                this.deleteServerFilesService.Delete(file);
                 this.fileService.DeleteFile(file);
                 this.fileService.RemoveFileEntry(file);
-
                 this.RegisteredFiles.Remove(file);
                 this.FirePropertyChanged(nameof(this.RegisteredFiles));
             });
 
             this.LoadLocalFiles();
-            this.GetFileInfosFromServer();
         }
 
         public ICommand RegisterFileCommand { get; private set; }
@@ -80,11 +79,6 @@ namespace Client.ViewModels
         public ObservableCollection<FileInfo> RegisteredFiles { get; private set; }
 
         public ObservableCollection<Task> CurrentDownloads { get; private set; }
-        
-        private void GetFileInfosFromServer()
-        {
-            this.signUpService.SignUp();
-        }
 
         private void LoadLocalFiles()
         {

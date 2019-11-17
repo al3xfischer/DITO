@@ -4,10 +4,6 @@ using Grpc.Net.Client;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 using Torrent;
 
 namespace Client.Services.Provider
@@ -25,27 +21,20 @@ namespace Client.Services.Provider
 
         private DeletionFile CreateDeletionFile(FileInfo file)
         {
-            string hash = string.Empty;
-
-            using (var md5 = MD5.Create())
-            using (var stream = File.OpenRead(file.FullName))
+            string hash = fileService.GetHash(file);
+            var deletionFile = new DeletionFile
             {
-                var fileHash = md5.ComputeHash(stream);
-                hash = BitConverter.ToString(fileHash).Replace("-", "").ToLowerInvariant();
-            }
-
-            DeletionFile deletionFile = new DeletionFile();
-
-            deletionFile.FileName = file.Name;
-            deletionFile.FileHash = hash;
-            deletionFile.FileSize = file.Length;
+                FileName = file.Name,
+                FileHash = hash,
+                FileSize = file.Length
+            };
 
             return deletionFile;
         }
 
-        public void DeleteFiles(ICollection<FileInfo> files)
+        public void Delete(ICollection<FileInfo> files)
         {
-            DeleteRequest deleteRequest = new DeleteRequest();
+            var deleteRequest = new DeleteRequest();
 
             foreach (var file in files)
             {
@@ -57,7 +46,7 @@ namespace Client.Services.Provider
             this.DeleteFilesAsync(deleteRequest);
         }
 
-        public void DeleteOneFile(FileInfo file)
+        public void Delete(FileInfo file)
         {
             DeleteRequest deleteRequest = new DeleteRequest();
 
