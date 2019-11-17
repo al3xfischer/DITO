@@ -1,5 +1,6 @@
 ﻿using Client.Command;
 using Client.Services.Interfaces;
+using Client.Services.Provider;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -17,13 +18,17 @@ namespace Client.ViewModels
         private readonly string filesFolder;
 
         private readonly IFileService fileService;
+        private readonly SignUpServiceImpl signUpService;
+        private readonly DeleteServerFilesService deleteServerFilesService;
 
-        public MainViewModel(IFileService fileService)
+        public MainViewModel(IFileService fileService, SignUpServiceImpl signUpService, DeleteServerFilesService deleteServerFilesService)
         {
             this.fileService = fileService ?? throw new ArgumentNullException(nameof(fileService));
+            this.signUpService = signUpService ?? throw new ArgumentNullException(nameof(signUpService));
+            this.deleteServerFilesService = deleteServerFilesService ?? throw new ArgumentNullException(nameof(deleteServerFilesService));
             this.filesFolder = Path.Combine(Directory.GetCurrentDirectory(), "shared");
             this.RegisteredFiles = new ObservableCollection<FileInfo>();
-            this.CurrentDownlaods = new ObservableCollection<Task>();
+            this.CurrentDownloads = new ObservableCollection<Task>();
 
             this.RegisterFileCommand = new RelayCommand((arg) =>
             {
@@ -46,7 +51,7 @@ namespace Client.ViewModels
                 this.RegisteredFiles.Add(copiedFile);
                 this.FirePropertyChanged(nameof(this.RegisteredFiles));
 
-                //TODO: Register to Server
+                this.signUpService.SignUpOneFile(copiedFile);
             });
 
             this.DeleteRegisteredFile = new RelayCommand((arg) =>
@@ -54,16 +59,18 @@ namespace Client.ViewModels
                 if (!(arg is FileInfo)) throw new ArgumentException("The arg is not of type FileInfo");
 
                 var file = arg as FileInfo;
+
+                this.deleteServerFilesService.DeleteOneFile(file);
+
                 this.fileService.DeleteFile(file);
                 this.fileService.RemoveFileEntry(file);
 
                 this.RegisteredFiles.Remove(file);
                 this.FirePropertyChanged(nameof(this.RegisteredFiles));
-                //// TODO: RM from server
-                
             });
 
             this.LoadLocalFiles();
+            this.GetFileInfosFromServer();
         }
 
         public ICommand RegisterFileCommand { get; private set; }
@@ -72,10 +79,20 @@ namespace Client.ViewModels
 
         public ObservableCollection<FileInfo> RegisteredFiles { get; private set; }
 
-        public ObservableCollection<Task> CurrentDownlaods { get; private set; }
+        public ObservableCollection<Task> CurrentDownloads { get; private set; }
+        
+        private void GetFileInfosFromServer()
+        {
+            this.signUpService.SignUp();
+        }
 
         private void LoadLocalFiles()
         {
+            if (!Directory.Exists(this.filesFolder))
+            {
+                Directory.CreateDirectory(this.filesFolder);
+            }
+
             var files = Directory.GetFiles(this.filesFolder).Select(f => new FileInfo(f));
 
             foreach (var file in files)

@@ -45,6 +45,11 @@ namespace Client.Services.Provider
             return files.FirstOrDefault(file => file.Name == fileName);
         }
 
+        public ICollection<FileInfo> GetAllFileEntries()
+        {
+            return this.files;
+        }
+
         public byte[] ReadFile(FileInfo file, int startIndex, int length)
         {
             if (file.Length < length)

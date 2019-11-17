@@ -1,6 +1,6 @@
 {
   "appconfig": {
-    "serverName": "127.0.0.1",
+    "serverName": "localhost",
     "serverPort": 5001,
     "maxBatchSize": 11019,
     "localServerPort": 5002

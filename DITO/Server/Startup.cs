@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Server.Services.Interfaces;
+using Server.Services.Provider;
 
 namespace Server
 {
@@ -16,6 +18,9 @@ namespace Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddGrpc();
+            services.AddSingleton<ITorrentFileManagerService, TorrentFileManagerService>();
+            services.AddTransient<SignUpServiceImpl>();
+            services.AddTransient<DeleteFilesServiceImpl>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -33,6 +38,8 @@ namespace Server
                 // Communication with gRPC endpoints must be made through a gRPC client.
                 // To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909
                 endpoints.MapGrpcService<GreeterService>();
+                endpoints.MapGrpcService<SignUpServiceImpl>();
+                endpoints.MapGrpcService<DeleteFilesServiceImpl>();
             });
         }
     }

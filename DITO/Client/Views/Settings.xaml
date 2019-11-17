@@ -12,6 +12,7 @@
             <RowDefinition Height="24"/>
             <RowDefinition Height="24"/>
             <RowDefinition Height="24"/>
+            <RowDefinition Height="24"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="30"/>
             <RowDefinition Height="10"/>
@@ -26,12 +27,14 @@
         <TextBlock Grid.Column="1" Grid.Row="1" Text="Servername(IP or Name):" />
         <TextBlock Grid.Column="1" Grid.Row="2" Text="Serverport:" />
         <TextBlock Grid.Column="1" Grid.Row="3" Text="Max batch size:" />
+        <TextBlock Grid.Column="1" Grid.Row="4" Text="Local server port:" />
 
         <TextBox Grid.Column="2" Grid.Row="1" Text="{Binding ServerName}" Margin="2"/>
         <TextBox Grid.Column="2" Grid.Row="2" Text="{Binding ServerPort}" Margin="2"/>
         <TextBox Grid.Column="2" Grid.Row="3" Text="{Binding MaxBatchSize}" Margin="2"/>
+        <TextBox Grid.Column="2" Grid.Row="4" Text="{Binding LocalServerPort}" Margin="2"/>
 
-        <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="5" HorizontalAlignment="Right" >
+        <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="6" HorizontalAlignment="Right" >
             <Button Content="Save" Width="70" Margin="0 2 5 2" Name="SaveBtn" Click="SaveBtn_Click"/>
             <Button Content="Abort" Width="70" Margin="0 2 0 2" Name="AbortBtn" Click="AbortBtn_Click"/>
         </StackPanel>

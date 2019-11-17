@@ -45,6 +45,12 @@ namespace Client.ViewModels
             set => this.configuration.MaxBatchSize = value;
         }
 
+        public int LocalServerPort
+        {
+            get => this.configuration.LocalServerPort;
+            set => this.configuration.LocalServerPort = value;
+        }
+
         public ICommand SaveCommand { get; }
     }
 }
