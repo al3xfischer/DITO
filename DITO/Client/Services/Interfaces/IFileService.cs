@@ -1,9 +1,12 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 
 namespace Client.Services.Interfaces
 {
     public interface IFileService
     {
+        ICollection<FileInfo> GetAllFileEntries();
+
         void AddFileEntry(FileInfo file);
 
         FileInfo GetFileEntry(string fileName);

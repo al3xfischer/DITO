@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Grpc.Core;
 
-namespace Server
+namespace Server.Services.Provider
 {
     public class GreeterService : Greeter.GreeterBase
     {

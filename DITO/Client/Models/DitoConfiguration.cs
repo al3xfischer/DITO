@@ -14,7 +14,7 @@ namespace Client.Models
         [JsonProperty(PropertyName = "maxBatchSize")]
         public int MaxBatchSize { get; set; }
 
-        [JsonProperty(PropertyName = "localServerName")]
+        [JsonProperty(PropertyName = "localServerPort")]
         public int LocalServerPort { get; set; }
 
         public object Clone()
