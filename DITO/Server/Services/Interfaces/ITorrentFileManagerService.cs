@@ -9,10 +9,10 @@ namespace Server.Services.Interfaces
 {
     public interface ITorrentFileManagerService
     {
-        ICollection<TorrentFile> GetAllTorrentFiles();
+        IEnumerable<TorrentFile> GetAllTorrentFiles();
 
-        void AddTorrentFiles(IEnumerable<SentFile> torrentFiles, string ipAddress, int port);
+        void AddTorrentFile(SentFile file, string ipAddress, int port);
 
-        void RemoveTorrentFiles(IEnumerable<DeletionFile> torrentFiles, string ipAddress, int port);
+        void RemoveTorrentFile(SentFile file, string ipAddress, int port);
     }
 }

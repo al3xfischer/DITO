@@ -22,6 +22,7 @@ namespace Client.ViewModels
                 this.configurationService.ServerName = this.configuration.ServerName;
                 this.configurationService.ServerPort = this.configuration.ServerPort;
                 this.configurationService.MaxBatchSize = this.configuration.MaxBatchSize;
+                this.configurationService.LocalServerPort = this.configuration.LocalServerPort;
 
                 this.configurationService.Save();
             });

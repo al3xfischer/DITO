@@ -1,0 +1,21 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "Torrent";
+
+import "google/protobuf/empty.proto";
+package FileRequest;
+
+service FileRequestService {
+  rpc RequestFiles (google.protobuf.Empty) returns (FileRequestReply) {}
+}
+
+message FileRequestReply {
+  repeated RequestedTorrentFile files = 1;
+}
+
+message RequestedTorrentFile {
+  string fileName = 1;
+  string fileHash = 2;
+  int64 fileSize = 3;
+  repeated string clientIPs = 4;
+}

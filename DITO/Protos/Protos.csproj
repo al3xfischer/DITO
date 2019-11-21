@@ -19,8 +19,8 @@
 
   <ItemGroup>
     <Protobuf Include="torrentfile.proto" GrpcServices="Both" />
-    <Protobuf Include="clientSignUp.proto" GrpcServices="Both" />
-    <Protobuf Include="clientDeleteFiles.proto" GrpcServices="Both" />
+    <Protobuf Include="registerFiles.proto" GrpcServices="Both" />
+    <Protobuf Include="fileRequest.proto" GrpcServices="Both" />
   </ItemGroup>
 
 </Project>

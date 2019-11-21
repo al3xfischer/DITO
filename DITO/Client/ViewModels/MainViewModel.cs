@@ -19,15 +19,15 @@ namespace Client.ViewModels
 
         private readonly IFileService fileService;
 
-        private readonly SignUpServiceImpl signUpService;
 
-        private readonly DeleteServerFilesService deleteServerFilesService;
+        private readonly RegisterFilesServiceImpl registerFilesService;
+        private readonly FileRequestServiceImpl fileRequestService;
 
-        public MainViewModel(IFileService fileService, SignUpServiceImpl signUpService, DeleteServerFilesService deleteServerFilesService)
+        public MainViewModel(IFileService fileService, RegisterFilesServiceImpl deleteServerFilesService, FileRequestServiceImpl fileRequestService)
         {
             this.fileService = fileService ?? throw new ArgumentNullException(nameof(fileService));
-            this.signUpService = signUpService ?? throw new ArgumentNullException(nameof(signUpService));
-            this.deleteServerFilesService = deleteServerFilesService ?? throw new ArgumentNullException(nameof(deleteServerFilesService));
+            this.registerFilesService = deleteServerFilesService ?? throw new ArgumentNullException(nameof(deleteServerFilesService));
+            this.fileRequestService = fileRequestService ?? throw new ArgumentNullException(nameof(fileRequestService));
             this.filesFolder = Path.Combine(Directory.GetCurrentDirectory(), "shared");
             this.RegisteredFiles = new ObservableCollection<FileInfo>();
             this.CurrentDownloads = new ObservableCollection<Task>();
@@ -51,7 +51,7 @@ namespace Client.ViewModels
 
                 fileService.AddFileEntry(copiedFile);
                 this.RegisteredFiles.Add(copiedFile);
-                this.signUpService.SignUp(copiedFile);
+                this.registerFilesService.RegisterFile(copiedFile);
                 this.FirePropertyChanged(nameof(this.RegisteredFiles));
             });
 
@@ -62,7 +62,7 @@ namespace Client.ViewModels
                 var file = arg as FileInfo;
 
 
-                this.deleteServerFilesService.Delete(file);
+                this.registerFilesService.DeregisterFile(file);
                 this.fileService.DeleteFile(file);
                 this.fileService.RemoveFileEntry(file);
                 this.RegisteredFiles.Remove(file);

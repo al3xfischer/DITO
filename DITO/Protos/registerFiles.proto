@@ -1,0 +1,29 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "Torrent";
+
+import "google/protobuf/empty.proto";
+package RegisterFiles;
+
+service RegisterFilesService {
+  rpc RegisterFile (RegistrationMessage) returns (google.protobuf.Empty) {}
+  rpc RegisterMultipleFiles (RegisterMultipleMessage) returns (google.protobuf.Empty) {}
+  rpc DeregisterFile (RegistrationMessage) returns (google.protobuf.Empty) {}
+  rpc DeregisterMultipleFiles (RegisterMultipleMessage) returns (google.protobuf.Empty) {}
+}
+
+message RegistrationMessage {
+  SentFile file = 1;
+  int32 clientPort = 2;
+}
+
+message SentFile {
+  string fileName = 1;
+  string fileHash = 2;
+  int64 fileSize = 3;
+}
+
+message RegisterMultipleMessage {
+  repeated SentFile files = 1;
+  int32 clientPort = 2;
+}

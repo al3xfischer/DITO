@@ -18,57 +18,53 @@ namespace Server.Services.Provider
             this.torrentFiles = new List<TorrentFile>();
         }
 
-        public void AddTorrentFiles(IEnumerable<SentFile> torrentFiles, string ipAddress, int port)
+        public void AddTorrentFile(SentFile file, string ipAddress, int port)
         {
-            foreach (var file in torrentFiles)
+            var existingFile = this.torrentFiles.FirstOrDefault(f => f.FileHash == file.FileHash && f.FileName == file.FileName);
+
+            if (existingFile == null)
             {
-                var existingFile = this.torrentFiles.FirstOrDefault(f => f.FileHash == file.FileHash && f.FileName == file.FileName);
+                this.torrentFiles.Add(new TorrentFile(file.FileName, file.FileHash, file.FileSize, ipAddress, port));
+            }
+            else
+            {
+                var address = IPEndPoint.Parse(ipAddress);
+                address.Port = port;
 
-                if (existingFile == null)
-                {
-                    this.torrentFiles.Add(new TorrentFile(file.FileName, file.FileHash, file.FileSize, ipAddress, port));
-                }
-                else
-                {
-                    var address = IPEndPoint.Parse(ipAddress);
-                    address.Port = port;
+                var existingClient = existingFile.Clients.FirstOrDefault(c => c.ToString() == address.ToString());
 
-                    if (!existingFile.ClientAddresses.Any(a => a.ToString() == address.ToString()))
-                    {
-                        existingFile.ClientAddresses.Add(address);
-                    }
+                if (existingClient == null)
+                {
+                    existingFile.Clients.Add(address);
                 }
             }
         }
 
-        public ICollection<TorrentFile> GetAllTorrentFiles()
+        public IEnumerable<TorrentFile> GetAllTorrentFiles()
         {
             return this.torrentFiles;
         }
 
-        public void RemoveTorrentFiles(IEnumerable<DeletionFile> torrentFiles, string ipAddress, int port)
+        public void RemoveTorrentFile(SentFile file, string ipAddress, int port)
         {
-            foreach (var file in torrentFiles)
+            var existingFile = this.torrentFiles.FirstOrDefault(f => f.FileHash == file.FileHash && f.FileName == file.FileName);
+
+            if (existingFile != null)
             {
-                var existingFile = this.torrentFiles.FirstOrDefault(f => f.FileHash == file.FileHash && f.FileName == file.FileName);
+                var address = IPEndPoint.Parse(ipAddress);
+                address.Port = port;
 
-                if (existingFile != null)
+                if (existingFile.Clients.Count() == 1 && existingFile.Clients.First().ToString() == address.ToString())
                 {
-                    var address = IPEndPoint.Parse(ipAddress);
-                    address.Port = port;
-
-                    if (existingFile.ClientAddresses.Count() == 1 && existingFile.ClientAddresses.First().ToString() == address.ToString())
-                    {
-                        this.torrentFiles.Remove(existingFile);
-                    }
-                    else
-                    {
-                        var existingAddress = existingFile.ClientAddresses.FirstOrDefault(a => a.ToString() == address.ToString());
-
-                        existingFile.ClientAddresses.Remove(existingAddress);
-                    }
+                    this.torrentFiles.Remove(existingFile);
                 }
-            }
+                else
+                {
+                    var existingClient = existingFile.Clients.FirstOrDefault(c => c.ToString() == address.ToString());
+
+                    existingFile.Clients.Remove(existingClient);
+                }
+            }            
         }
     }
 }

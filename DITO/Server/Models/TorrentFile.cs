@@ -13,16 +13,25 @@ namespace Server.Models
             FileHash = fileHash ?? throw new ArgumentNullException(nameof(fileHash));
         }
 
+        public TorrentFile(TorrentFile file, IEnumerable<IPEndPoint> clients)
+        {
+            this.FileName = file.FileName;
+            this.FileHash = file.FileHash;
+            this.FileSize = file.FileSize;
+            this.Clients = new List<IPEndPoint>(clients);
+        }
+
         public TorrentFile(string fileName, string fileHash, long fileSize, string ipAddress, int port)
         {
-            FileName = fileName ?? throw new ArgumentNullException(nameof(fileName));
-            FileHash = fileHash ?? throw new ArgumentNullException(nameof(fileHash));
-            FileSize = fileSize;
+            this.FileName = fileName ?? throw new ArgumentNullException(nameof(fileName));
+            this.FileHash = fileHash ?? throw new ArgumentNullException(nameof(fileHash));
+            this.FileSize = fileSize;
 
-            this.ClientAddresses = new List<IPEndPoint>();
+            this.Clients = new List<IPEndPoint>();
+
             var address = IPEndPoint.Parse(ipAddress);
             address.Port = port;
-            this.ClientAddresses.Add(address);
+            this.Clients.Add(address);
         }
 
         public string FileName { get; }
@@ -31,7 +40,7 @@ namespace Server.Models
 
         public long FileSize { get; }
 
-        public List<IPEndPoint> ClientAddresses { get; }
+        public List<IPEndPoint> Clients { get; }
 
         public override bool Equals(object obj)
         {

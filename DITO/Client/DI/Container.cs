@@ -31,8 +31,8 @@ namespace Client.DI
             // Services
             services.AddSingleton<IConfigurationService, ConfigurationService>();
             services.AddTransient<TorrentFileServiceImpl>();
-            services.AddTransient<SignUpServiceImpl>();
-            services.AddTransient<DeleteServerFilesService>();
+            services.AddTransient<RegisterFilesServiceImpl>();
+            services.AddTransient<FileRequestServiceImpl>();
             services.AddSingleton<IFileService, FileService>();
             services.AddSingleton<IClientServerService,ClientServerService>();
 
