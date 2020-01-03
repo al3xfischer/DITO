@@ -9,21 +9,36 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="4*" />
+            <ColumnDefinition Width="1.5*" />
+        </Grid.ColumnDefinitions>
 
-        <TextBlock Grid.Row="0" Text="Search:" Margin="2" />
-        <TextBox Grid.Row="0" Name="tb_Search" Margin="2" />
+        <TextBox Grid.Row="0" Grid.Column="0" Name="tb_Search" Margin="2"  />
+        <Button Grid.Row="0" Grid.Column="2" Margin="2" Content="Search" />
 
-        <ListView Grid.Row="1">
-            
+        <ListView Grid.Row="1" Grid.ColumnSpan="2" ItemsSource="{Binding Files}" SelectionMode="Extended" SelectionChanged="lvFiles_SelectionChanged" Name="lvFiles">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                               <CheckBox Tag="{Binding ID}" IsChecked="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListViewItem}}, Path=IsSelected}" />  
+                           </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Width="200" Header="Name" DisplayMemberBinding="{Binding FileName}" />
+                    <GridViewColumn Width="80" Header="Size" DisplayMemberBinding="{Binding FileSize}" />
+                </GridView>
+            </ListView.View>
         </ListView>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="2">
-            <Button x:Name="Abort"/>
-            <Button x:Name="Dowanload"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="2" Grid.ColumnSpan="2">
+            <Button x:Name="Cancel" Content="Cancel" Margin="5" Click="Cancel_Click" />
+            <Button x:Name="Download" Content="Download" Margin="5" Click="Download_Click"/>
         </StackPanel>
     </Grid>
 </Window>

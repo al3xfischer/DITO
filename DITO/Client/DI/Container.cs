@@ -27,6 +27,7 @@ namespace Client.DI
             // ViewModels
             services.AddTransient<MainViewModel>();
             services.AddTransient<SettingsViewModel>();
+            services.AddTransient<BrowserViewModel>();
 
             // Services
             services.AddSingleton<IConfigurationService, ConfigurationService>();
@@ -35,6 +36,8 @@ namespace Client.DI
             services.AddTransient<FileRequestServiceImpl>();
             services.AddSingleton<IFileService, FileService>();
             services.AddSingleton<IClientServerService,ClientServerService>();
+            services.AddSingleton<IDownloadService, DownloadService>();
+            services.AddSingleton<ClientToClientService>();
 
             // Logging
             services.AddLogging();

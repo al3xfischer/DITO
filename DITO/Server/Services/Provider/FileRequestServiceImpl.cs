@@ -31,7 +31,7 @@ namespace Server.Services.Provider
                 torrentFile.FileHash = file.FileHash;
                 torrentFile.FileSize = file.FileSize;
 
-                torrentFile.ClientIPs.Add(file.Clients.Select(c => c.Address.ToString()));
+                torrentFile.Clients.Add(file.Clients.Select(c => new FileHost() { Ip = c.Address.ToString(), Port = c.Port }));
 
                 reply.Files.Add(torrentFile);
             }

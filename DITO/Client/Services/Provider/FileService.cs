@@ -51,7 +51,7 @@ namespace Client.Services.Provider
             return this.files;
         }
 
-        public byte[] ReadFile(FileInfo file, int startIndex, int length)
+        public byte[] ReadFile(FileInfo file, long startIndex, long length)
         {
             if (file.Length < length)
             {
@@ -68,7 +68,7 @@ namespace Client.Services.Provider
             {
                 if (stream.CanSeek) stream.Seek(startIndex, SeekOrigin.Begin);
 
-                stream.Read(data, 0, length);
+                stream.Read(data, 0, (int)length);
             }
 
             return data;

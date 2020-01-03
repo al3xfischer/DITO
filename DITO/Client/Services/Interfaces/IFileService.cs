@@ -11,7 +11,7 @@ namespace Client.Services.Interfaces
 
         FileInfo GetFileEntry(string fileName);
 
-        byte[] ReadFile(FileInfo file, int startIndex, int length);
+        byte[] ReadFile(FileInfo file, long startIndex, long length);
 
         void RemoveFileEntry(FileInfo file);
 

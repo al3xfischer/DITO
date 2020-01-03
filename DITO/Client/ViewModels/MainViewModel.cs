@@ -19,15 +19,12 @@ namespace Client.ViewModels
 
         private readonly IFileService fileService;
 
-
         private readonly RegisterFilesServiceImpl registerFilesService;
-        private readonly FileRequestServiceImpl fileRequestService;
 
-        public MainViewModel(IFileService fileService, RegisterFilesServiceImpl deleteServerFilesService, FileRequestServiceImpl fileRequestService)
+        public MainViewModel(IFileService fileService, RegisterFilesServiceImpl deleteServerFilesService)
         {
             this.fileService = fileService ?? throw new ArgumentNullException(nameof(fileService));
             this.registerFilesService = deleteServerFilesService ?? throw new ArgumentNullException(nameof(deleteServerFilesService));
-            this.fileRequestService = fileRequestService ?? throw new ArgumentNullException(nameof(fileRequestService));
             this.filesFolder = Path.Combine(Directory.GetCurrentDirectory(), "shared");
             this.RegisteredFiles = new ObservableCollection<FileInfo>();
             this.CurrentDownloads = new ObservableCollection<Task>();
@@ -69,12 +66,24 @@ namespace Client.ViewModels
                 this.FirePropertyChanged(nameof(this.RegisteredFiles));
             });
 
+            this.RegisterToServerCommand = new RelayCommand((arg) =>
+            {
+                this.registerFilesService.RegisterMultipleFiles(this.fileService.GetAllFileEntries());
+            });
+
+            this.DeregisterFromServerCommand = new RelayCommand((arg) =>
+            {
+                this.registerFilesService.DeregisterMultipleFiles(this.fileService.GetAllFileEntries());
+            });
+
             this.LoadLocalFiles();
         }
 
         public ICommand RegisterFileCommand { get; private set; }
 
         public ICommand DeleteRegisteredFile { get; private set; }
+        public ICommand RegisterToServerCommand { get; private set; }
+        public ICommand DeregisterFromServerCommand { get; private set; }
 
         public ObservableCollection<FileInfo> RegisteredFiles { get; private set; }
 

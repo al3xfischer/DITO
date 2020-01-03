@@ -52,6 +52,6 @@ namespace Client.ViewModels
             set => this.configuration.LocalServerPort = value;
         }
 
-        public ICommand SaveCommand { get; }
+        public ICommand SaveCommand { get; private set; }
     }
 }

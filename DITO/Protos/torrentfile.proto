@@ -12,8 +12,8 @@ service TorrentFileService {
 
 message FileRequest {
 	string name = 1;
-	int32 max_batch_size = 2;
-	int32 batch_length = 3;
+	int64 max_batch_size = 2;
+	int64 batch_length = 3;
 	int32 index = 4;
 }
 

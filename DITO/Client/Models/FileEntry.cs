@@ -8,7 +8,7 @@ namespace Client.Models
     {
         public string Name { get; set; }
 
-        public int Length { get; set; }
+        public long Length { get; set; }
 
         public string Hash { get; set; }
     }

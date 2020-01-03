@@ -15,39 +15,9 @@ namespace Client
         public MainWindow()
         {
             InitializeComponent();
-            this.DataContext = Container.Resolve<MainViewModel>();
-        }
-
-        private void TestMth()
-        {
-            //var fileService = Container.Resolve<IFileService>();
-            //var file = new FileInfo(@"C:\Users\Alex\Desktop\chat.png");
-            //fileService.AddFileEntry(file);
-
-
-            //var server = Container.Resolve<IClientServerService>();
-            //server.Start();
-            //var con = Container.Resolve<IConfigurationService>();
-            //var clientSer = new ClientToClientService(con);
-
-            //var entry = new FileEntry { Length = 22040, Name = "chat.png" };
-            //var hosts = new List<Host> { new Host { Name = "10.0.0.4", Port = 5001 } };
-            //var res = await Task.WhenAll(clientSer.QueryFile(hosts, entry));
-            //var allData = res.SelectMany(r => r.Payload.ToArray());
-            //var files = Container.Resolve<IFileService>();
-            //files.SaveFile(allData.ToArray(), @"C:\Users\Alex\Desktop", "chat.png");
-
-            //var fileService = new FileService();
-            //var file = new FileInfo(@"C:\Users\Alex\Desktop\chat.png");
-            //fileService.AddFileEntry(file);
-
-            //var stored = fileService.GetFileEntry("chat.png");
-            //var data = fileService.ReadFile(stored, 0, (int)stored.Length/2);
-            //var data1 = fileService.ReadFile(stored, data.Length, (int)stored.Length/2);
-            //var all = new List<byte[]> { data, data1 };
-            //var total = all.Merge(data.Length);
-            //fileService.SaveFile(total, @"C:\Users\Alex\Desktop", "chat_2.png");
-
+            var vm = Container.Resolve<MainViewModel>();
+            this.DataContext = vm;
+            vm.RegisterToServerCommand.Execute(null);
         }
 
         private void Menu_Settings_Click(object sender, RoutedEventArgs e)
@@ -73,6 +43,11 @@ namespace Client
         private void Menu_Browse_Files_Click(object sender, RoutedEventArgs e)
         {
             new FileBrowser().ShowDialog();
+        }
+
+        private void Root_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            (this.DataContext as MainViewModel).DeregisterFromServerCommand.Execute(null);
         }
     }
 }
