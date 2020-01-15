@@ -1,4 +1,5 @@
 ﻿using Client.Command;
+using Client.Models;
 using Client.Services.Interfaces;
 using Client.Services.Provider;
 using System;
@@ -22,6 +23,7 @@ namespace Client.ViewModels
         private readonly RegisterFilesServiceImpl registerFilesService;
 
         private readonly IClientServerService clientServerService;
+
         private readonly IDownloadService downloadService;
 
         public MainViewModel(IFileService fileService, RegisterFilesServiceImpl deleteServerFilesService, IClientServerService clientServerService, IDownloadService downloadService)
@@ -30,9 +32,38 @@ namespace Client.ViewModels
             this.registerFilesService = deleteServerFilesService ?? throw new ArgumentNullException(nameof(deleteServerFilesService));
             this.filesFolder = Path.Combine(Directory.GetCurrentDirectory(), "shared");
             this.RegisteredFiles = new ObservableCollection<FileInfo>();
-            this.CurrentDownloads = new ObservableCollection<Task>();
+            this.CurrentDownloads = new ObservableCollection<Download>();
             this.clientServerService = clientServerService;
             this.downloadService = downloadService ?? throw new ArgumentNullException(nameof(downloadService));
+
+            this.downloadService.DownloadStarted += (sender, args) =>
+            {
+                var download = new Download
+                {
+                    FileName = args.FileName,
+                    Completed = false
+                };
+
+                this.CurrentDownloads.Add(download);
+                this.FirePropertyChanged(nameof(this.CurrentDownloads));
+            };
+
+            this.downloadService.DownloadCompleted += (sender, args) =>
+            {
+                var download = this.CurrentDownloads.First(d => d.FileName == args.FileInfo.Name);
+                if (download is null) return;
+
+                this.CurrentDownloads.Remove(download);
+                download.Completed = true;
+                download.CompletedTimeStamp = DateTime.Now;
+                this.CurrentDownloads.Add(download);
+                fileService.AddFileEntry(args.FileInfo);
+                this.RegisteredFiles.Add(args.FileInfo);
+                this.registerFilesService.RegisterFile(args.FileInfo);
+                this.FirePropertyChanged(nameof(this.RegisteredFiles));
+                this.FirePropertyChanged(nameof(this.CurrentDownloads));
+            };
+
 
             this.RegisterFileCommand = new RelayCommand((arg) =>
             {
@@ -94,7 +125,7 @@ namespace Client.ViewModels
 
         public ObservableCollection<FileInfo> RegisteredFiles { get; private set; }
 
-        public ObservableCollection<Task> CurrentDownloads { get; private set; }
+        public ObservableCollection<Download> CurrentDownloads { get; private set; }
 
         private void LoadLocalFiles()
         {

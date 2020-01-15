@@ -3,13 +3,16 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:timestamp="clr-namespace:Client.Converter"
         xmlns:local="clr-namespace:Client"
         mc:Ignorable="d"
         x:Name="Root"
         Title="MainWindow" Height="450" Width="800"
         Closing="Root_Closing"
-        
         >
+    <Window.Resources>
+        <timestamp:TimeStampConverter x:Key="TimeStampConverter" />
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -54,7 +57,15 @@
                     </GridView>
                 </ListView.View>
             </ListView>
-            <ListView Grid.Row="1" ItemsSource="{Binding CurrntDownloads}" />
+            <ListView Grid.Row="1" ItemsSource="{Binding CurrentDownloads}" >
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Name" DisplayMemberBinding="{Binding FileName}"/>
+                        <GridViewColumn Header="Completed" DisplayMemberBinding="{Binding Completed}"/>
+                        <GridViewColumn Header="Completed At" DisplayMemberBinding="{Binding CompletedTimeStamp, Converter={StaticResource TimeStampConverter}}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
         </Grid>
     </Grid>
 </Window>
