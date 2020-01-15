@@ -21,13 +21,16 @@ namespace Client.ViewModels
 
         private readonly RegisterFilesServiceImpl registerFilesService;
 
-        public MainViewModel(IFileService fileService, RegisterFilesServiceImpl deleteServerFilesService)
+        private readonly IClientServerService clientServerService;
+
+        public MainViewModel(IFileService fileService, RegisterFilesServiceImpl deleteServerFilesService, IClientServerService clientServerService)
         {
             this.fileService = fileService ?? throw new ArgumentNullException(nameof(fileService));
             this.registerFilesService = deleteServerFilesService ?? throw new ArgumentNullException(nameof(deleteServerFilesService));
             this.filesFolder = Path.Combine(Directory.GetCurrentDirectory(), "shared");
             this.RegisteredFiles = new ObservableCollection<FileInfo>();
             this.CurrentDownloads = new ObservableCollection<Task>();
+            this.clientServerService = clientServerService;
 
             this.RegisterFileCommand = new RelayCommand((arg) =>
             {
@@ -75,6 +78,8 @@ namespace Client.ViewModels
             {
                 this.registerFilesService.DeregisterMultipleFiles(this.fileService.GetAllFileEntries());
             });
+
+            this.clientServerService.Start();
 
             this.LoadLocalFiles();
         }

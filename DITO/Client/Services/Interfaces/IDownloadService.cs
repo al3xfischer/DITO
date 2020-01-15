@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Client.Models;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Torrent;
@@ -9,6 +10,6 @@ namespace Client.Services.Interfaces
     {
         public event EventHandler DownloadStarted;
 
-        public void AddDownload(IEnumerable<Task<FileReply>> download);
+        public void AddDownload(IEnumerable<Task<FileReply>> downloads, FileEntry file);
     }
 }

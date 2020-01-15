@@ -25,14 +25,15 @@ namespace Client.ViewModels
             this.fileRequestService = registerFilesService ?? throw new ArgumentNullException(nameof(registerFilesService));
             this.downloadService = downloadService ?? throw new ArgumentNullException(nameof(downloadService));
             this.clientToClientService = clientToClientService ?? throw new ArgumentNullException(nameof(clientToClientService));
-
+            
             this.DownloadCommand = new RelayCommand((arg) =>
             {
                 foreach (var file in this.SelectedFiles)
                 {
                     var servers = file.Clients.Select(host => new Host() { Name = host.Ip, Port = (int)host.Port });
-                    var queries = this.clientToClientService.QueryFile(servers, new FileEntry() { Name = file.FileName, Hash = file.FileHash, Length = file.FileSize });
-                    downloadService.AddDownload(queries);
+                    var fileEntry = new FileEntry() { Name = file.FileName, Hash = file.FileHash, Length = file.FileSize };
+                    var queries = this.clientToClientService.QueryFile(servers, fileEntry);
+                    downloadService.AddDownload(queries, fileEntry);
                 }
             });
 

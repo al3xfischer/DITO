@@ -24,7 +24,7 @@ namespace Client
             {
                 if (!enumerator.MoveNext())
                 {
-                    enumerator.Reset();
+                    enumerator = entries.GetEnumerator();
                     enumerator.MoveNext();
                 }
 
