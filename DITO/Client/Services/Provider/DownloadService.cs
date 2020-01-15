@@ -13,7 +13,8 @@ namespace Client.Services.Provider
 {
     public class DownloadService : IDownloadService
     {
-        public event EventHandler DownloadStarted;
+        public event EventHandler<DownloadCompltetedEvenArgs> DownloadCompleted;
+        public event EventHandler<DownloadStartedEventArgs> DownloadStarted;
 
         private readonly IFileService fileService;
         private string filesFolder;
@@ -36,31 +37,12 @@ namespace Client.Services.Provider
                 throw new ArgumentNullException(nameof(file));
             }
 
-            /* funktioniert, aber nicht wirklich asynchron:
+            this.DownloadStarted?.Invoke(this, new DownloadStartedEventArgs(file.Name));
             
-            //var filePath = Path.Combine(this.filesFolder, file.Name);
-
-            using (FileStream fileStream = new FileStream(filePath, FileMode.Create))
-            {
-                
-                foreach (var downloadTask in downloads)
-                {
-                    var chunk = await downloadTask;
-
-                    fileStream.Write(chunk.Payload.ToByteArray(), 0, chunk.Payload.Length);
-                }
-            }*/
-
-            //var fileReplies = await Task.WhenAll(downloads); geht nicht wenn öfter aufs selbe file zugegriffen wird (immer selber host)
-
-            var fileReplies = new List<FileReply>();
-
-            foreach (var downloadTask in downloads)
-            {
-                fileReplies.Add(await downloadTask);
-            }
-
-            /*var newFile = */this.fileService.SaveFile(this.MergePayloads(fileReplies), this.filesFolder, file.Name);
+            var fileReplies = await Task.WhenAll(downloads);
+            var fileInfo = this.fileService.SaveFile(this.MergePayloads(fileReplies), this.filesFolder, file.Name);
+            
+            this.DownloadCompleted?.Invoke(this, new DownloadCompltetedEvenArgs(fileInfo));
         }
 
         private byte[] MergePayloads(IEnumerable<FileReply> fileReplies)

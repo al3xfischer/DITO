@@ -22,8 +22,9 @@ namespace Client.ViewModels
         private readonly RegisterFilesServiceImpl registerFilesService;
 
         private readonly IClientServerService clientServerService;
+        private readonly IDownloadService downloadService;
 
-        public MainViewModel(IFileService fileService, RegisterFilesServiceImpl deleteServerFilesService, IClientServerService clientServerService)
+        public MainViewModel(IFileService fileService, RegisterFilesServiceImpl deleteServerFilesService, IClientServerService clientServerService, IDownloadService downloadService)
         {
             this.fileService = fileService ?? throw new ArgumentNullException(nameof(fileService));
             this.registerFilesService = deleteServerFilesService ?? throw new ArgumentNullException(nameof(deleteServerFilesService));
@@ -31,6 +32,7 @@ namespace Client.ViewModels
             this.RegisteredFiles = new ObservableCollection<FileInfo>();
             this.CurrentDownloads = new ObservableCollection<Task>();
             this.clientServerService = clientServerService;
+            this.downloadService = downloadService ?? throw new ArgumentNullException(nameof(downloadService));
 
             this.RegisterFileCommand = new RelayCommand((arg) =>
             {

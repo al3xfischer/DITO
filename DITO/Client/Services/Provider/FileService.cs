@@ -64,7 +64,7 @@ namespace Client.Services.Provider
             }
 
             var data = new byte[length];
-            using (var stream = new FileStream(file.FullName, FileMode.Open))
+            using (var stream = new FileStream(file.FullName, FileMode.Open,FileAccess.Read))
             {
                 if (stream.CanSeek) stream.Seek(startIndex, SeekOrigin.Begin);
 
