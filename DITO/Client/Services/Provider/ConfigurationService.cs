@@ -40,7 +40,7 @@ namespace Client.Services.Provider
         public int MaxBatchSize
         {
             get => appConfiguration.MaxBatchSize;
-            set => appConfiguration.ServerPort = value;
+            set => appConfiguration.MaxBatchSize = value;
         }
         
         public int LocalServerPort
