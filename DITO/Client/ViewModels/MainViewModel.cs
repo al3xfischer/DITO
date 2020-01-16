@@ -3,12 +3,14 @@ using Client.Models;
 using Client.Services.Interfaces;
 using Client.Services.Provider;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using Torrent;
 
 namespace Client.ViewModels
 
@@ -50,17 +52,25 @@ namespace Client.ViewModels
 
             this.downloadService.DownloadCompleted += (sender, args) =>
             {
+                var replies = this.downloadService.Files[args.Hash];
+                var ordered = replies.OrderBy(r => r.Index).Distinct();
+                var merged = this.MergePayloads(ordered);
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "shared");
+                var fileInfo = this.fileService.SaveFile(merged,path,args.FileName);
+
+                var downloadedHash = this.fileService.GetHash(fileInfo);
+
                 var download = this.CurrentDownloads.First(d => d.Hash == args.Hash);
                 if (download is null) return;
 
                 this.CurrentDownloads.Remove(download);
-                download.Success = args.Success;
+                download.Success = args.Hash == downloadedHash;
                 download.Completed = true;
                 download.CompletedTimeStamp = DateTime.Now;
                 this.CurrentDownloads.Add(download);
-                fileService.AddFileEntry(args.FileInfo);
-                this.RegisteredFiles.Add(args.FileInfo);
-                this.registerFilesService.RegisterFile(args.FileInfo);
+                fileService.AddFileEntry(fileInfo);
+                this.RegisteredFiles.Add(fileInfo);
+                this.registerFilesService.RegisterFile(fileInfo);
                 this.FirePropertyChanged(nameof(this.RegisteredFiles));
                 this.FirePropertyChanged(nameof(this.CurrentDownloads));
             };
@@ -144,6 +154,11 @@ namespace Client.ViewModels
             }
 
             this.FirePropertyChanged(nameof(this.RegisteredFiles));
+        }
+
+        private byte[] MergePayloads(IEnumerable<FileReply> fileReplies)
+        {
+            return fileReplies.SelectMany(fr => fr.Payload).ToArray();
         }
     }
 }

@@ -35,8 +35,8 @@ namespace Client.ViewModels
                     {
                         var servers = file.Clients.Select(host => new Host() { Name = host.Ip, Port = (int)host.Port });
                         var fileEntry = new FileEntry() { Name = file.FileName, Hash = file.FileHash, Length = file.FileSize };
-                        var queries = this.clientToClientService.QueryFile(servers, fileEntry);
-                        downloadService.AddDownload(queries, fileEntry);
+                        var requests = this.clientToClientService.QueryFile(servers, fileEntry);
+                        downloadService.AddDownload(requests, fileEntry, servers);
                     }
                 }
                 catch (Exception)

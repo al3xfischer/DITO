@@ -8,28 +8,28 @@ using Google.Protobuf;
 using System.IO;
 using Client.Models;
 using System.Linq;
+using Grpc.Core;
+using System.Collections.Concurrent;
 
 namespace Client.Services.Provider
 {
     public class DownloadService : IDownloadService
     {
-        public event EventHandler<DownloadCompltetedEvenArgs> DownloadCompleted;
+        public event EventHandler<DownloadCompletedEventArgs> DownloadCompleted;
         public event EventHandler<DownloadStartedEventArgs> DownloadStarted;
 
-        private readonly IFileService fileService;
-        private string filesFolder;
+        private readonly ConcurrentDictionary<string, IEnumerable<FileReply>> files;
 
-        public DownloadService(IFileService fileService)
+        public ConcurrentDictionary<string, IEnumerable<FileReply>> Files
         {
-            this.fileService = fileService;
-            this.filesFolder = Path.Combine(Directory.GetCurrentDirectory(), "shared");
+            get => this.files;
         }
 
-        public async void AddDownload(IEnumerable<Task<FileReply>> downloads, FileEntry file)
+        public async void AddDownload(IEnumerable<FileRequest> requests, FileEntry file, IEnumerable<Host> hosts)
         {
-            if (downloads is null)
+            if (requests is null)
             {
-                throw new ArgumentNullException(nameof(downloads));
+                throw new ArgumentNullException(nameof(requests));
             }
 
             if (file is null)
@@ -38,17 +38,50 @@ namespace Client.Services.Provider
             }
 
             this.DownloadStarted?.Invoke(this, new DownloadStartedEventArgs(file));
-            
-            var fileReplies = await Task.WhenAll(downloads);
-            FileInfo fileInfo = this.fileService.SaveFile(this.MergePayloads(fileReplies), this.filesFolder, file.Name);
-            var downloadedHash = this.fileService.GetHash(fileInfo);
 
-            this.DownloadCompleted?.Invoke(this, new DownloadCompltetedEvenArgs(fileInfo,downloadedHash == file.Hash,file.Hash));
+            //var fileReplies = await Task.WhenAll(downloads);
+
+            var workers = Worker<FileRequest, FileReply>.GetWorkers(hosts, (fileRequest, host) =>
+            {
+                var channel = new Channel(host.Name, host.Port, ChannelCredentials.Insecure);
+                var client = new TorrentFileService.TorrentFileServiceClient(channel);
+                //var batchLength = (host.i < partsCount - 1 ? this.configurationService.MaxBatchSize : lastBatchSize );
+                return client.GetFileAsync(fileRequest).ResponseAsync;
+            });
+
+            Queue<FileRequest> queue = new Queue<FileRequest>(requests);
+
+            List<FileReply> replies = new List<FileReply>();
+
+            foreach (var worker in workers)
+            {
+                if (queue.Count == 0) break;
+
+                worker.ResultReady += (sender, args) =>
+                {
+                    replies.Add(worker.Result);
+                    if (queue.Count > 0)
+                    {
+                        worker.Execute(queue.Dequeue());
+                    }
+
+                    if (queue.Count == 0 && workers.All(w => !w.Running))
+                    {
+                        if (this.files.Keys.Contains(file.Hash))
+                        {
+                            return;
+                        }
+
+                        this.files.TryAdd(file.Hash, replies);
+                        this.DownloadCompleted?.Invoke(this, new DownloadCompletedEventArgs(file.Hash,file.Name));
+                    }
+
+                };
+
+                worker.Execute(queue.Dequeue());
+            }
         }
 
-        private byte[] MergePayloads(IEnumerable<FileReply> fileReplies)
-        {
-            return fileReplies.SelectMany(fr => fr.Payload).ToArray();
-        }
+
     }
 }

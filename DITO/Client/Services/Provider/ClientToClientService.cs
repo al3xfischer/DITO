@@ -17,7 +17,7 @@ namespace Client.Services.Provider
             this.configurationService = configurationService;
         }
 
-        public IEnumerable<Task<FileReply>> QueryFile(IEnumerable<Host> hosts, FileEntry file)
+        public IEnumerable<FileRequest> QueryFile(IEnumerable<Host> hosts, FileEntry file)
         {
             if (hosts is null)
             {
@@ -34,7 +34,22 @@ namespace Client.Services.Provider
             if (lastBatchSize != 0) partsCount++;
             var repeated = hosts.Repeat((i) => i < partsCount);
 
-            foreach (var host in repeated.Select((config, i) => (config, i)))
+            List<FileRequest> requests = new List<FileRequest>();
+
+            for (int i = 0; i < partsCount; i++)
+            {
+                requests.Add(new FileRequest()
+                {
+                    Index = i,
+                    MaxBatchSize = this.configurationService.MaxBatchSize,
+                    BatchLength = (i < partsCount - 1 ? this.configurationService.MaxBatchSize : lastBatchSize ),
+                    Name = file.Name
+                });
+            }
+
+            return requests;
+
+            /*foreach (var host in repeated.Select((config, i) => (config, i)))
             {
                 var channel = new Channel(host.config.Name, host.config.Port, ChannelCredentials.Insecure);
                 var client = new TorrentFileService.TorrentFileServiceClient(channel);
@@ -46,7 +61,7 @@ namespace Client.Services.Provider
                     Name = file.Name,
                     BatchLength = batchLength
                 }).ResponseAsync;
-            }
+            }*/
         }
     }
 }
