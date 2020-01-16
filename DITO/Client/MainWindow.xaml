@@ -27,6 +27,7 @@
                 <MenuItem Header="_Browse Files" Name="Menu_Browse_Files" Click="Menu_Browse_Files_Click"  />
             </MenuItem>
             <MenuItem Header="_Settings" Name="Menu_Settings" Click="Menu_Settings_Click"/>
+            <MenuItem Header="_Folder" Name="Folder" Click="Folder_Click"/>
         </Menu>
 
         <!-- Body -->

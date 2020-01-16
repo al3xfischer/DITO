@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using Client.DI;
 using Client.ViewModels;
@@ -48,6 +49,11 @@ namespace Client
         private void Root_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             (this.DataContext as MainViewModel).DeregisterFromServerCommand.Execute(null);
+        }
+
+        private void Folder_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("explorer.exe", Path.Combine(Directory.GetCurrentDirectory(), "shared"));
         }
     }
 }
