@@ -63,6 +63,7 @@
                         <GridViewColumn Header="Name" DisplayMemberBinding="{Binding FileName}"/>
                         <GridViewColumn Header="Completed" DisplayMemberBinding="{Binding Completed}"/>
                         <GridViewColumn Header="Completed At" DisplayMemberBinding="{Binding CompletedTimeStamp, Converter={StaticResource TimeStampConverter}}" />
+                        <GridViewColumn Header="Success" DisplayMemberBinding="{Binding Success}" />
                     </GridView>
                 </ListView.View>
             </ListView>

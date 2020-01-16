@@ -37,12 +37,13 @@ namespace Client.Services.Provider
                 throw new ArgumentNullException(nameof(file));
             }
 
-            this.DownloadStarted?.Invoke(this, new DownloadStartedEventArgs(file.Name));
+            this.DownloadStarted?.Invoke(this, new DownloadStartedEventArgs(file));
             
             var fileReplies = await Task.WhenAll(downloads);
-            var fileInfo = this.fileService.SaveFile(this.MergePayloads(fileReplies), this.filesFolder, file.Name);
-            
-            this.DownloadCompleted?.Invoke(this, new DownloadCompltetedEvenArgs(fileInfo));
+            FileInfo fileInfo = this.fileService.SaveFile(this.MergePayloads(fileReplies), this.filesFolder, file.Name);
+            var downloadedHash = this.fileService.GetHash(fileInfo);
+
+            this.DownloadCompleted?.Invoke(this, new DownloadCompltetedEvenArgs(fileInfo,downloadedHash == file.Hash,file.Hash));
         }
 
         private byte[] MergePayloads(IEnumerable<FileReply> fileReplies)

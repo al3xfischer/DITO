@@ -11,5 +11,9 @@ namespace Client.Models
         public bool Completed { get; set; }
 
         public DateTime CompletedTimeStamp { get; set; }
+
+        public string Hash { get; set; }
+
+        public bool Success { get; set; }
     }
 }

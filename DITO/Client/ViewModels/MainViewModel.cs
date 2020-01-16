@@ -41,7 +41,7 @@ namespace Client.ViewModels
                 var download = new Download
                 {
                     FileName = args.FileName,
-                    Completed = false
+                    Hash = args.Hash,
                 };
 
                 this.CurrentDownloads.Add(download);
@@ -50,10 +50,11 @@ namespace Client.ViewModels
 
             this.downloadService.DownloadCompleted += (sender, args) =>
             {
-                var download = this.CurrentDownloads.First(d => d.FileName == args.FileInfo.Name);
+                var download = this.CurrentDownloads.First(d => d.Hash == args.Hash);
                 if (download is null) return;
 
                 this.CurrentDownloads.Remove(download);
+                download.Success = args.Success;
                 download.Completed = true;
                 download.CompletedTimeStamp = DateTime.Now;
                 this.CurrentDownloads.Add(download);
