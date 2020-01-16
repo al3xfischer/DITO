@@ -25,6 +25,11 @@ namespace Client.Services.Provider
             get => this.files;
         }
 
+        public DownloadService()
+        {
+            this.files = new ConcurrentDictionary<string, IEnumerable<FileReply>>();
+        }
+
         public async void AddDownload(IEnumerable<FileRequest> requests, FileEntry file, IEnumerable<Host> hosts)
         {
             if (requests is null)
